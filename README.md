@@ -10,22 +10,22 @@
 
 <br/>
 
-[![macOS](https://img.shields.io/badge/macOS-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/Pitt-Lee/timeline-app/releases)
+[![macOS](https://img.shields.io/badge/macOS-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/fuxiangPro/timeline-app/releases)
 [![Electron](https://img.shields.io/badge/Electron-47848F?style=for-the-badge&logo=electron&logoColor=white)](https://www.electronjs.org/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](./LICENSE)
 
-[![GitHub Stars](https://img.shields.io/github/stars/Pitt-Lee/timeline-app?style=social)](https://github.com/Pitt-Lee/timeline-app/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/Pitt-Lee/timeline-app?style=social)](https://github.com/Pitt-Lee/timeline-app/network/members)
-[![GitHub Issues](https://img.shields.io/github/issues/Pitt-Lee/timeline-app)](https://github.com/Pitt-Lee/timeline-app/issues)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/Pitt-Lee/timeline-app?color=blue)](https://github.com/Pitt-Lee/timeline-app/commits/main)
+[![GitHub Stars](https://img.shields.io/github/stars/fuxiangPro/timeline-app?style=social)](https://github.com/fuxiangPro/timeline-app/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/fuxiangPro/timeline-app?style=social)](https://github.com/fuxiangPro/timeline-app/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/fuxiangPro/timeline-app)](https://github.com/fuxiangPro/timeline-app/issues)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/fuxiangPro/timeline-app?color=blue)](https://github.com/fuxiangPro/timeline-app/commits/main)
 
 <br/>
 
-**[📥 Download](https://github.com/Pitt-Lee/timeline-app/releases/latest)** ·
-**[🐛 Report Bug](https://github.com/Pitt-Lee/timeline-app/issues/new?template=bug_report.yml)** ·
-**[✨ Request Feature](https://github.com/Pitt-Lee/timeline-app/issues/new?template=feature_request.yml)** ·
-**[💬 Discussions](https://github.com/Pitt-Lee/timeline-app/discussions)**
+**[📥 Download](https://github.com/fuxiangPro/timeline-app/releases/latest)** ·
+**[🐛 Report Bug](https://github.com/fuxiangPro/timeline-app/issues/new?template=bug_report.yml)** ·
+**[✨ Request Feature](https://github.com/fuxiangPro/timeline-app/issues/new?template=feature_request.yml)** ·
+**[💬 Discussions](https://github.com/fuxiangPro/timeline-app/discussions)**
 
 </div>
 
@@ -152,7 +152,7 @@ chmod +x timeline-app.command
 
 ```bash
 # 1. Clone 仓库
-git clone https://github.com/Pitt-Lee/timeline-app.git
+git clone https://github.com/fuxiangPro/timeline-app.git
 cd timeline-app
 
 # 2. 安装依赖（首次约 1-2 分钟）
@@ -329,7 +329,7 @@ macOS 系统不允许"可交互且永远在最底层"的窗口。当前方案是
 - [ ] 🪟 Windows / Linux 适配
 - [ ] 📊 完成率统计视图
 
-See [open issues](https://github.com/Pitt-Lee/timeline-app/issues) for the full list.
+See [open issues](https://github.com/fuxiangPro/timeline-app/issues) for the full list.
 
 ---
 
@@ -355,8 +355,8 @@ git push origin feature/awesome
 
 ### Top Contributors
 
-<a href="https://github.com/Pitt-Lee/timeline-app/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Pitt-Lee/timeline-app" />
+<a href="https://github.com/fuxiangPro/timeline-app/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=fuxiangPro/timeline-app" />
 </a>
 
 ---

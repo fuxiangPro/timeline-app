@@ -24,12 +24,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Pitt-Lee/timeline-app.git"
+    "url": "git+https://github.com/fuxiangPro/timeline-app.git"
   },
   "bugs": {
-    "url": "https://github.com/Pitt-Lee/timeline-app/issues"
+    "url": "https://github.com/fuxiangPro/timeline-app/issues"
   },
-  "homepage": "https://github.com/Pitt-Lee/timeline-app#readme",
+  "homepage": "https://github.com/fuxiangPro/timeline-app#readme",
   "devDependencies": {
     "electron": "^28.0.0"
   }

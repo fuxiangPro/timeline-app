@@ -8,9 +8,9 @@ The following is a set of guidelines for contributing to Timeline App. These are
 
 ### 🐛 Reporting Bugs
 
-Before creating bug reports, please check the [existing issues](https://github.com/Pitt-Lee/timeline-app/issues) — your bug may already be reported.
+Before creating bug reports, please check the [existing issues](https://github.com/fuxiangPro/timeline-app/issues) — your bug may already be reported.
 
-Use the [Bug Report template](https://github.com/Pitt-Lee/timeline-app/issues/new?template=bug_report.yml) and include:
+Use the [Bug Report template](https://github.com/fuxiangPro/timeline-app/issues/new?template=bug_report.yml) and include:
 
 - Clear and descriptive title
 - Steps to reproduce
@@ -20,7 +20,7 @@ Use the [Bug Report template](https://github.com/Pitt-Lee/timeline-app/issues/ne
 
 ### ✨ Suggesting Features
 
-Open a [Feature Request issue](https://github.com/Pitt-Lee/timeline-app/issues/new?template=feature_request.yml). Describe:
+Open a [Feature Request issue](https://github.com/fuxiangPro/timeline-app/issues/new?template=feature_request.yml). Describe:
 
 - The problem you're trying to solve
 - Your proposed solution
@@ -88,4 +88,4 @@ This project adheres to the [Contributor Covenant](./CODE_OF_CONDUCT.md). By par
 
 ## Questions?
 
-Open a [Discussion](https://github.com/Pitt-Lee/timeline-app/discussions) — we're happy to help!
+Open a [Discussion](https://github.com/fuxiangPro/timeline-app/discussions) — we're happy to help!

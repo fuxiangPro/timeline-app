@@ -12,7 +12,7 @@
 If you discover a security vulnerability:
 
 1. **Do NOT** open a public GitHub issue
-2. Use [GitHub Security Advisories](https://github.com/Pitt-Lee/timeline-app/security/advisories/new) (preferred)
+2. Use [GitHub Security Advisories](https://github.com/fuxiangPro/timeline-app/security/advisories/new) (preferred)
 3. Or email the maintainer directly
 
 Include:
