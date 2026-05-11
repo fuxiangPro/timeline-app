@@ -1,0 +1,36 @@
+{
+  "name": "timeline-app",
+  "version": "1.0.0",
+  "description": "🎯 A beautiful floating timeline task manager for macOS — Electron + glassmorphism design",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --enable-logging"
+  },
+  "keywords": [
+    "electron",
+    "macos",
+    "timeline",
+    "task-manager",
+    "floating-window",
+    "glassmorphism",
+    "productivity",
+    "desktop-app"
+  ],
+  "author": {
+    "name": "fuxiang",
+    "url": "https://github.com/Pitt-Lee"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pitt-Lee/timeline-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Pitt-Lee/timeline-app/issues"
+  },
+  "homepage": "https://github.com/Pitt-Lee/timeline-app#readme",
+  "devDependencies": {
+    "electron": "^28.0.0"
+  }
+}

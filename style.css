@@ -1,0 +1,668 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --master-opacity: 0.7;
+  --bg:         rgba(255, 255, 255, 0.10);
+  --bg-header:  rgba(255, 255, 255, 0.08);
+  --border:     rgba(255, 255, 255, 0.14);
+  --border-mid: rgba(255, 255, 255, 0.10);
+
+  --text:       rgba(255, 255, 255, 1.00);
+  --text-sub:   rgba(255, 255, 255, 0.70);
+  --text-muted: rgba(255, 255, 255, 0.40);
+
+  --node-ring:  rgba(255, 255, 255, 0.55);
+  --node-fill:  rgba(255, 255, 255, 0.00);
+  --node-done-fill: rgba(255, 255, 255, 0.92);
+  --node-done-check: #1a1a1a;
+  --node-overdue: rgba(255, 100, 80, 0.70);
+
+  --track-bg:   rgba(255, 255, 255, 0.20);
+  --track-done: rgba(255, 255, 255, 0.55);
+
+  --hover:      rgba(255, 255, 255, 0.09);
+  --active:     rgba(255, 255, 255, 0.16);
+
+  --today:      rgba(255, 220, 80, 0.35);
+
+  --radius:     14px;
+  --font:       -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+  --font-mono:  "SF Mono", "Menlo", monospace;
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font);
+  background: transparent;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* ── Blur Background (separate layer to avoid scroll artifacts) ── */
+#blur-bg {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  border-radius: 14px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ── App Shell ─────────────────────────────────── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg);
+  border-radius: var(--radius);
+  box-shadow:
+    0 0 0 1px var(--border),
+    0 20px 60px rgba(0,0,0,0.25),
+    0 4px 12px rgba(0,0,0,0.15);
+  overflow: hidden;
+}
+
+/* ── Floating Win Controls ─────────────────────── */
+#win-controls-float {
+  position: absolute;
+  top: 10px; left: 12px;
+  display: flex; gap: 7px;
+  z-index: 50;
+  opacity: 0;
+  transition: opacity 0.2s;
+  -webkit-app-region: no-drag;
+}
+#app.show-top #win-controls-float { opacity: 1; }
+
+.win-btn {
+  width: 13px; height: 13px;
+  border-radius: 50%; border: none; cursor: pointer;
+  transition: filter 0.15s;
+}
+.win-btn:hover { filter: brightness(1.15); }
+.win-btn.close  { background: #ff5f57; }
+.win-btn.min    { background: #ffbd2e; }
+.win-btn.zoom   { background: #28ca42; opacity: 0.35; cursor: default; }
+
+/* ── Scroll Content ────────────────────────────── */
+#content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 12px 0 4px;
+  /* At slider=0% → alpha = 0.02 (nearly transparent); at 100% → alpha = 1.0 (solid) */
+  background: rgba(18, 18, 22, calc(0.02 + 0.98 * var(--master-opacity)));
+  /* Force own GPU compositing layer to prevent scroll ghosting */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  contain: paint;
+}
+#content *, #footer * {
+  -webkit-app-region: no-drag;
+}
+#content::-webkit-scrollbar { width: 5px; }
+#content::-webkit-scrollbar-track { background: transparent; }
+#content::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.18);
+  border-radius: 3px;
+}
+
+/* ── Main Line Row ─────────────────────────────── */
+.main-line {
+  padding: 8px 0 16px;
+  border-bottom: 1px solid var(--border-mid);
+  animation: slideIn 0.25s cubic-bezier(.22,1,.36,1) both;
+}
+.main-line:last-child { border-bottom: none; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.line-header {
+  display: flex;
+  align-items: center;
+  padding: 0 16px 6px 16px;
+  gap: 10px;
+}
+
+/* Index badge */
+.line-index {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  min-width: 18px;
+}
+
+.line-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 3px 7px;
+  border-radius: 5px;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.line-name:hover { background: var(--hover); }
+
+.line-name-input {
+  font-size: 11.5px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 2px 7px;
+  background: rgba(255,255,255,0.08);
+  outline: none; width: 150px;
+  font-family: var(--font);
+}
+
+/* Progress pill */
+.line-progress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.progress-bar {
+  width: 48px; height: 3px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: rgba(255,255,255,0.70);
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(.22,1,.36,1);
+}
+.progress-text {
+  font-size: 9.5px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  min-width: 24px;
+}
+
+.line-dates {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10.5px; color: var(--text-muted);
+  flex-shrink: 0;
+}
+.date-sep { opacity: 0.5; }
+
+.date-input {
+  font-size: 10.5px; font-family: var(--font);
+  color: var(--text-sub);
+  border: 1px solid transparent;
+  border-radius: 4px; padding: 1px 4px;
+  background: transparent; outline: none; width: 90px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  color-scheme: dark;
+}
+.date-input:hover  { border-color: var(--border); background: var(--hover); }
+.date-input:focus  { border-color: rgba(255,255,255,0.35); background: var(--active); }
+
+.line-spacer { flex: 1; }
+
+.btn-delete-line {
+  background: none; border: none;
+  font-size: 15px; color: var(--text-muted);
+  cursor: pointer; padding: 3px 6px;
+  border-radius: 5px;
+  transition: background 0.15s, color 0.15s, opacity 0.15s;
+  opacity: 0;
+  line-height: 1;
+}
+.main-line:hover .btn-delete-line { opacity: 1; }
+.btn-delete-line:hover { background: rgba(255,80,60,0.18); color: rgba(255,120,100,1); }
+
+/* ── Timeline Track ────────────────────────────── */
+.track-wrap {
+  position: relative;
+  padding: 0 20px 0 16px;
+  height: 88px;
+  overflow: visible;
+}
+
+.track-line {
+  position: absolute;
+  left: 16px; right: 58px; top: 44px;
+  height: 1.5px;
+  background: var(--track-bg);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.track-fill {
+  height: 100%;
+  background: var(--track-done);
+  border-radius: 1px;
+  transition: width 0.5s cubic-bezier(.22,1,.36,1);
+}
+
+/* Today marker */
+.today-marker {
+  position: absolute;
+  top: 28px;
+  width: 1px;
+  height: 30px;
+  background: var(--today);
+  box-shadow: 0 0 6px var(--today);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Add node button */
+.btn-add-node {
+  position: absolute; right: 20px; top: 35px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--hover);
+  border: 1.5px dashed rgba(255,255,255,0.30);
+  color: var(--text-muted);
+  font-size: 14px; line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+  z-index: 5;
+}
+.btn-add-node:hover {
+  background: var(--active);
+  border-color: rgba(255,255,255,0.60);
+  color: var(--text);
+  transform: scale(1.1);
+}
+
+/* ── Node (two-layer: labels + circle, so circles always stack above
+      any sibling's label and remain clickable even when labels overlap) ── */
+
+/* Labels layer — below the circle in the z-stack */
+.node-labels {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  z-index: 2;
+  /* Default: label below circle */
+  top: 58px;
+}
+.node-labels.label-above {
+  flex-direction: column-reverse;
+  top: 5px;
+}
+.node-labels.label-above .node-label      { margin-top: 0; margin-bottom: 5px; }
+.node-labels.label-above .node-date-label { margin-top: 0; margin-bottom: 1px; }
+
+/* Circle layer — always on top, so adjacent labels can't intercept clicks */
+.node-circle-wrap {
+  position: absolute;
+  top: 35px;
+  transform: translateX(-50%);
+  cursor: pointer;
+  z-index: 4;
+}
+
+.node-circle {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.30);
+  background: rgba(255,255,255,0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.20),
+    0 0 0 3px rgba(255,255,255,0.04);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+  position: relative; flex-shrink: 0;
+}
+.node-circle:hover {
+  border-color: rgba(255,255,255,0.65);
+  background: rgba(255,255,255,0.10);
+  transform: scale(1.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    0 0 0 4px rgba(255,255,255,0.07),
+    0 0 14px rgba(255,255,255,0.18);
+}
+
+/* overdue */
+.node-circle-wrap.overdue .node-circle {
+  border-color: rgba(255,110,90,0.55);
+  background: rgba(255,100,80,0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255,150,130,0.2),
+    0 0 0 3px rgba(255,100,80,0.06),
+    0 0 10px rgba(255,100,80,0.15);
+}
+
+/* done */
+.node-circle-wrap.done .node-circle {
+  background: rgba(255,255,255,0.82);
+  border-color: rgba(255,255,255,0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 0 0 3px rgba(255,255,255,0.10),
+    0 0 14px rgba(255,255,255,0.28);
+  animation: popIn 0.32s cubic-bezier(.34,1.56,.64,1);
+}
+.node-circle-wrap.done .node-circle:hover {
+  background: rgba(255,255,255,0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    0 0 0 4px rgba(255,255,255,0.12),
+    0 0 18px rgba(255,255,255,0.35);
+}
+.node-circle-wrap.done .node-circle::after {
+  content: '';
+  display: block; width: 5px; height: 8px;
+  border: 1.5px solid var(--node-done-check);
+  border-top: none; border-left: none;
+  transform: rotate(45deg) translate(-0.5px, -1px);
+}
+
+@keyframes popIn {
+  0%  { transform: scale(0.6); opacity: 0.5; }
+  60% { transform: scale(1.2); }
+  100%{ transform: scale(1);   opacity: 1;   }
+}
+
+.node-label {
+  margin-top: 5px;
+  font-size: 10.5px;
+  color: var(--text-sub);
+  white-space: nowrap;
+  max-width: 110px;
+  overflow: hidden; text-overflow: ellipsis;
+  text-align: center; line-height: 1.3;
+  transition: color 0.2s;
+}
+.node-labels.done .node-label {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.node-labels.overdue .node-label { color: rgba(255,140,120,0.9); }
+
+.node-date-label {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin-top: 1px;
+  transition: color 0.2s;
+}
+.node-labels.overdue .node-date-label { color: rgba(255,120,100,0.7); }
+
+/* Tooltip */
+#node-tooltip {
+  position: fixed;
+  background: rgba(20, 20, 25, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(255,255,255,0.92);
+  font-size: 11px;
+  font-family: var(--font);
+  white-space: nowrap;
+  padding: 4px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 999;
+  transform: translateX(-50%);
+}
+
+.node-delete {
+  position: absolute; top: -5px; right: -5px;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: rgba(255,70,50,0.85);
+  color: #fff; font-size: 9px; border: none;
+  cursor: pointer; display: none;
+  align-items: center; justify-content: center;
+  line-height: 1; z-index: 10;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.node-circle:hover .node-delete { display: flex; }
+
+/* ── Footer ────────────────────────────────────── */
+#footer {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 8px 16px 10px;
+  display: flex; align-items: center; gap: 10px;
+  border-top: 1px solid var(--border-mid);
+  /* Scale with --master-opacity so slider at max gives a solid footer */
+  background: rgba(18, 18, 22, calc(0.06 + 0.94 * var(--master-opacity)));
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 20;
+  -webkit-app-region: no-drag;
+}
+#app.show-bottom #footer { opacity: 1; }
+
+.btn-add-line {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  border-radius: 7px;
+  border: 1px dashed rgba(255,255,255,0.25);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 11.5px; font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-add-line:hover {
+  background: var(--hover);
+  border-color: rgba(255,255,255,0.55);
+  color: var(--text);
+}
+.btn-add-line .plus { font-size: 14px; line-height: 1; opacity: 0.7; }
+
+.opacity-slider-wrap {
+  display: flex; align-items: center; gap: 6px;
+  flex: 1; justify-content: center;
+}
+.opacity-icon {
+  font-size: 11px; color: var(--text-muted);
+  flex-shrink: 0;
+}
+#opacity-slider {
+  -webkit-appearance: none;
+  width: 100px; height: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.20);
+  outline: none; cursor: pointer;
+}
+#opacity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.80);
+  box-shadow: 0 0 6px rgba(255,255,255,0.30);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+#opacity-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(255,255,255,0.50);
+}
+
+.footer-hint {
+  font-size: 10px; color: var(--text-muted);
+  letter-spacing: 0.01em;
+  flex-shrink: 0;
+}
+
+/* ── Inline Delete Confirm ─────────────────────── */
+.delete-confirm {
+  display: flex; align-items: center; gap: 6px;
+  padding: 3px 8px;
+  background: rgba(255,70,50,0.15);
+  border: 1px solid rgba(255,70,50,0.35);
+  border-radius: 6px;
+  font-size: 11px; color: rgba(255,140,120,1);
+  animation: fadeIn 0.15s ease;
+}
+.delete-confirm button {
+  background: none; border: none; cursor: pointer;
+  font-size: 11px; font-family: var(--font);
+  padding: 1px 5px; border-radius: 4px;
+  transition: background 0.1s;
+}
+.delete-confirm .dc-cancel { color: var(--text-muted); }
+.delete-confirm .dc-cancel:hover { background: var(--hover); }
+.delete-confirm .dc-ok { color: rgba(255,120,100,1); font-weight: 600; }
+.delete-confirm .dc-ok:hover { background: rgba(255,70,50,0.2); }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Modal ─────────────────────────────────────── */
+#modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.30);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 100;
+  display: none; align-items: center; justify-content: center;
+  border-radius: var(--radius);
+  -webkit-app-region: no-drag;
+}
+#modal-overlay * {
+  -webkit-app-region: no-drag;
+}
+#modal-overlay.open {
+  display: flex;
+  animation: overlayIn 0.2s ease;
+}
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+#modal {
+  background: rgba(30, 30, 35, 0.75);
+  backdrop-filter: blur(30px) saturate(1.5);
+  -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  border-radius: 13px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.12),
+    0 24px 60px rgba(0,0,0,0.45);
+  padding: 22px 22px 18px;
+  width: 290px;
+  animation: modalIn 0.22s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.92) translateY(6px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+#modal h3 {
+  font-size: 13.5px; font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  letter-spacing: 0.02em;
+}
+
+.modal-field { margin-bottom: 11px; }
+.modal-field label {
+  display: block; font-size: 10px;
+  color: var(--text-muted); margin-bottom: 5px;
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.color-picker {
+  display: flex; gap: 8px; align-items: center;
+  padding: 2px 0;
+}
+.color-opt {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.color-opt:hover { transform: scale(1.2); }
+.color-opt.selected {
+  border-color: rgba(255,255,255,0.85);
+  transform: scale(1.15);
+}
+
+.modal-field textarea {
+  width: 100%; padding: 8px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+  font-size: 12px; font-family: var(--font);
+  color: var(--text);
+  outline: none; resize: vertical;
+  min-height: 64px;
+  transition: border-color 0.15s, background 0.15s;
+  line-height: 1.5;
+}
+.modal-field textarea::placeholder { color: var(--text-muted); }
+.modal-field textarea:focus {
+  border-color: rgba(255,255,255,0.40);
+  background: rgba(255,255,255,0.12);
+}
+
+.modal-field input[type="text"],
+.modal-field input[type="date"] {
+  width: 100%; padding: 8px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+  font-size: 13px; font-family: var(--font);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  color-scheme: dark;
+}
+.modal-field input:focus {
+  border-color: rgba(255,255,255,0.40);
+  background: rgba(255,255,255,0.12);
+}
+
+.modal-actions {
+  display: flex; justify-content: flex-end;
+  gap: 7px; margin-top: 15px;
+}
+.btn-cancel, .btn-confirm {
+  padding: 6px 15px;
+  border-radius: 7px;
+  font-size: 12px; font-family: var(--font);
+  cursor: pointer; border: none;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.btn-cancel {
+  background: rgba(255,255,255,0.09);
+  color: var(--text-sub);
+}
+.btn-cancel:hover { background: rgba(255,255,255,0.16); }
+.btn-confirm {
+  background: rgba(255,255,255,0.88);
+  color: #1a1a1a;
+}
+.btn-confirm:hover { background: rgba(255,255,255,1); }
+
+/* ── Empty State ───────────────────────────────── */
+.empty-hint {
+  text-align: center; padding: 44px 20px;
+  color: var(--text-muted); font-size: 12.5px;
+}
+.empty-hint .big { font-size: 30px; margin-bottom: 10px; opacity: 0.6; }

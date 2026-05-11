@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>时间轴</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="blur-bg"></div>
+<div id="app">
+
+  <!-- Floating win controls (show on hover) -->
+  <div id="win-controls-float">
+    <button class="win-btn close" id="btn-close"></button>
+    <button class="win-btn min"   id="btn-min"></button>
+    <button class="win-btn zoom"></button>
+  </div>
+
+  <!-- Main Content (draggable) -->
+  <div id="content" style="-webkit-app-region: drag">
+    <div id="lines-container"></div>
+  </div>
+
+  <!-- Footer -->
+  <div id="footer">
+    <button class="btn-add-line" id="btn-add-line">
+      <span class="plus">＋</span>
+      <span>新增主线</span>
+    </button>
+    <div class="opacity-slider-wrap">
+      <span class="opacity-icon">◑</span>
+      <input type="range" id="opacity-slider" min="0" max="100" value="70" />
+    </div>
+    <span class="footer-hint">点击节点勾选完成</span>
+  </div>
+
+</div>
+
+<!-- Node Modal -->
+<div id="modal-overlay">
+  <div id="modal">
+    <h3 id="modal-title">新增节点</h3>
+    <div class="modal-field">
+      <label>任务名称</label>
+      <input type="text" id="node-title-input" placeholder="例：需求评审" />
+    </div>
+    <div class="modal-field">
+      <label>日期</label>
+      <input type="date" id="node-date-input" />
+    </div>
+    <div class="modal-field">
+      <label>颜色</label>
+      <div class="color-picker">
+        <div class="color-opt" data-color="" style="background: rgba(255,255,255,0.55);" title="默认"></div>
+        <div class="color-opt" data-color="pink"   style="background: rgba(255,150,180,0.85);" title="粉色"></div>
+        <div class="color-opt" data-color="green"  style="background: rgba(100,220,150,0.85);" title="绿色"></div>
+        <div class="color-opt" data-color="yellow" style="background: rgba(255,215,70,0.85);"  title="黄色"></div>
+        <div class="color-opt" data-color="purple" style="background: rgba(185,130,255,0.85);" title="紫色"></div>
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>备注</label>
+      <textarea id="node-notes-input" placeholder="可填写相关内容、链接、说明…" rows="3"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" id="modal-cancel">取消</button>
+      <button type="button" class="btn-confirm" id="modal-confirm">确认</button>
+    </div>
+  </div>
+</div>
+
+<div id="node-tooltip"></div>
+<script src="renderer.js"></script>
+</body>
+</html>
