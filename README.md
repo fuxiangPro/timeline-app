@@ -280,6 +280,7 @@ timeline-app/
 Electron 应用需要 Node.js 环境运行。最简单的方式是安装 <a href="https://nodejs.org">Node.js LTS 版本</a>，或者用 <code>brew install node</code>。一次安装，永久使用。
 <br/>
 未来我们计划提供 <code>.dmg</code> 安装包，到时就不需要 Node.js 了。
+<br/>
 </details>
 
 <details>
@@ -290,6 +291,7 @@ Electron 应用需要 Node.js 环境运行。最简单的方式是安装 <a href
 <code>.command</code> 一键安装器在更新时会<b>自动备份并恢复</b>你的 <code>data.json</code>。
 <br/>
 建议你定期手动备份这个文件到 iCloud 或其他云盘以防意外。
+<br/>
 </details>
 
 <details>
@@ -298,6 +300,7 @@ Electron 应用需要 Node.js 环境运行。最简单的方式是安装 <a href
 macOS 系统不允许"可交互且永远在最底层"的窗口。当前方案是普通层级（<code>alwaysOnTop: false</code>），点击窗口会浮上来。这是系统正常行为，不是 bug。
 <br/>
 如需置顶，点击 📌 按钮即可。
+<br/>
 </details>
 
 <details>
@@ -306,6 +309,7 @@ macOS 系统不允许"可交互且永远在最底层"的窗口。当前方案是
 当然！编辑 <code>style.css</code> 顶部的 <code>:root</code> CSS 变量即可。所有颜色都集中在那里。
 <br/>
 节点颜色定义在 <code>renderer.js</code> 的 <code>COLOR_MAP</code> 对象中。
+<br/>
 </details>
 
 <details>
@@ -314,6 +318,7 @@ macOS 系统不允许"可交互且永远在最底层"的窗口。当前方案是
 目前专为 macOS 设计（毛玻璃、窗口控制按钮等）。Electron 本身跨平台，但部分 UI 细节需要调整。
 <br/>
 欢迎提 PR 适配其他平台！
+<br/>
 </details>
 
 ---
@@ -363,7 +368,7 @@ git push origin feature/awesome
 
 ## 📄 License
 
-Distributed under the **MIT License**. See [LICENSE](./LICENSE) for more information.
+Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.
 
 ---
 
@@ -380,7 +385,7 @@ Built with care using:
 
 ### **If this project helps you, please give it a ⭐️**
 
-#### Made with ❤️ by [fuxiang](https://github.com/Pitt-Lee)
+#### Made with ❤️ by [fuxiang](https://github.com/fuxiangPro)
 
 <sub>Powered by Electron · Designed for macOS · Open source forever</sub>
 
