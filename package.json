@@ -1,7 +1,7 @@
 {
   "name": "timeline-app",
   "version": "1.0.0",
-  "description": "🎯 A beautiful floating timeline task manager for macOS — Electron + glassmorphism design",
+  "description": "🎯 A beautiful floating timeline task manager for macOS — Electron + glassmorphism",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -19,7 +19,7 @@
   ],
   "author": {
     "name": "fuxiang",
-    "url": "https://github.com/Pitt-Lee"
+    "url": "https://github.com/fuxiangPro"
   },
   "license": "MIT",
   "repository": {
