@@ -228,13 +228,17 @@ function renderTrack(line, trackWrap) {
     return { node, px: pct * trackW };
   });
 
-  // Sort by ideal position, push overlapping nodes right
+  // Sort by ideal position, push overlapping nodes right, then clamp to track
   positioned.sort((a, b) => a.px - b.px);
   for (let i = 1; i < positioned.length; i++) {
     if (positioned[i].px - positioned[i - 1].px < MIN_GAP) {
       positioned[i].px = positioned[i - 1].px + MIN_GAP;
     }
   }
+  // Nodes near the end could get pushed past the track; keep them in bounds.
+  positioned.forEach(item => {
+    item.px = Math.max(0, Math.min(item.px, trackW));
+  });
 
   // Two-layer rendering: build labels and circles separately, then append
   // ALL labels first and ALL circles after — so circles stack above any
@@ -448,6 +452,12 @@ function closeModal() {
 // ─── Event Bindings ──────────────────────────────────────────
 document.getElementById('btn-close').addEventListener('click', () => window.api.closeWindow());
 document.getElementById('btn-min').addEventListener('click', () => window.api.minimizeWindow());
+document.getElementById('btn-zoom').addEventListener('click', () => window.api.toggleZoom());
+const _btnPin = document.getElementById('btn-pin');
+_btnPin.addEventListener('click', () => {
+  window.api.togglePin();
+  _btnPin.classList.toggle('active');
+});
 document.getElementById('btn-add-line').addEventListener('click', () => {
   const start = new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10);
   const end = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
@@ -468,9 +478,15 @@ document.getElementById('modal-overlay').addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
-  if (e.key === 'Enter' && document.getElementById('modal-overlay').classList.contains('open')
-      && e.target.tagName !== 'TEXTAREA') {
-    e.preventDefault();
+  if (e.key === 'Enter' && document.getElementById('modal-overlay').classList.contains('open')) {
+    // Let Enter inside input/textarea fields reach the browser's default
+    // behavior (so the title input can confirm with Enter); only intercept
+    // Enter when the focus is not inside a field.
+    const tag = (e.target.tagName || '').toUpperCase();
+    if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+      e.preventDefault();
+      if (_modalCallback) _modalCallback();
+    }
   }
 });
 
