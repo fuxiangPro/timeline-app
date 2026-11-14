@@ -221,7 +221,7 @@ timeline-app/
 ├── preload.js           # 🌉 安全桥接 API
 ├── renderer.js          # 🎨 全部前端逻辑（渲染、交互、数据）
 ├── index.html           # 📄 页面结构
-├── style.css            # 💎 所有样式（CSS 变量集中在 :root）
+├── style.css           # 💎 所有样式（CSS 变量集中在 :root）
 ├── data.json            # 💾 本地数据持久化（自动生成）
 ├── installer/
 │   └── timeline-app.command  # 📦 一键安装器（自解压脚本）
@@ -308,7 +308,7 @@ macOS 系统不允许"可交互且永远在最底层"的窗口。当前方案是
 <br/>
 当然！编辑 <code>style.css</code> 顶部的 <code>:root</code> CSS 变量即可。所有颜色都集中在那里。
 <br/>
-节点颜色定义在 <code>renderer.js</code> 的 <code>COLOR_MAP</code> 对象中。
+节点颜色定义在 <code>renderer.js</code> 的 <code>NODE_COLORS</code> 对象中。
 <br/>
 </details>
 
