@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('api', {
   writeData: (data) => ipcRenderer.invoke('write-data', data),
   closeWindow: () => ipcRenderer.send('win-close'),
   minimizeWindow: () => ipcRenderer.send('win-minimize'),
-  setOpacity: (v) => ipcRenderer.send('win-set-opacity', v),
+  toggleZoom: () => ipcRenderer.send('win-toggle-zoom'),
+  togglePin: () => ipcRenderer.send('win-toggle-pin'),
   repaint: () => ipcRenderer.send('repaint'),
 });
